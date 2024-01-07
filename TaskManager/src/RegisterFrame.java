@@ -13,12 +13,11 @@ public class RegisterFrame extends JFrame {
 
     public RegisterFrame() {
         setTitle("Registration");
-        setSize(300, 350);
+        setSize(500, 650);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
 
         JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(10, 4));
+        panel.setLayout(new GridLayout(12, 6));
 
         panel.add(new JLabel("Username:"));
         usernameField = new JTextField();
@@ -64,7 +63,7 @@ public class RegisterFrame extends JFrame {
                 } else {
                     try {
                     	conn=DBConnection.getConnection();
-            			String sql = "INSERT INTO User (username, password, email, country, city, phone) VALUES (?, ?, ?, ?, ?, ?)";
+            			String sql = "INSERT INTO \"User\" (username, password, email, country, city, phone) VALUES (?, ?, ?, ?, ?, ?)";
 
                         PreparedStatement statement = conn.prepareStatement(sql);
                         statement.setString(1, username);

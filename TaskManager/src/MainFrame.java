@@ -95,8 +95,8 @@ public class MainFrame extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				
-				//LoginFrame loginFrame = new LoginFrame();				
-				//loginFrame.setVisible(true);
+				LoginFrame loginFrame = new LoginFrame();				
+				loginFrame.setVisible(true);
 				
 			}
 			

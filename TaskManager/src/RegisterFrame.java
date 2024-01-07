@@ -8,6 +8,8 @@ public class RegisterFrame extends JFrame {
     private JPasswordField passwordField;
     private JButton registerButton;
     private JLabel messageLabel;
+    
+    Connection conn = null;
 
     public RegisterFrame() {
         setTitle("Registration");
@@ -53,15 +55,18 @@ public class RegisterFrame extends JFrame {
                 String city = cityField.getText();
                 String phone = phoneField.getText();
 
-                if (username.isEmpty() || password.isEmpty() || email.isEmpty()) {
-                    messageLabel.setText("Username, password, and email cannot be empty.");
+                if (username.isEmpty() || password.isEmpty()) {
+                    messageLabel.setText("Username and password cannot be empty.");
+                } else if (!country.matches("[a-zA-Z ]+") || !city.matches("[a-zA-Z ]+")) {
+                    messageLabel.setText("Countries and cities can only contain letters.");
+                } else if (!phone.matches("[0-9]+")) {
+                    messageLabel.setText("Phone numbers can only contain digits.");
                 } else {
                     try {
-                        Connection connection = DriverManager.getConnection("jdbc:h2:tcp://localhost/C:\\Users\\Veniamin\\Desktop\\Uni Stuff\\Year 2\\Java OOP DB\\PersonDB", "sa", "fmi");
+                    	conn=DBConnection.getConnection();
+            			String sql = "INSERT INTO User (username, password, email, country, city, phone) VALUES (?, ?, ?, ?, ?, ?)";
 
-                        String sql = "INSERT INTO User (username, password, email, country, city, phone) VALUES (?, ?, ?, ?, ?, ?)";
-
-                        PreparedStatement statement = connection.prepareStatement(sql);
+                        PreparedStatement statement = conn.prepareStatement(sql);
                         statement.setString(1, username);
                         statement.setString(2, password);
                         statement.setString(3, email);
@@ -72,12 +77,12 @@ public class RegisterFrame extends JFrame {
                         int rowsInserted = statement.executeUpdate();
                         if (rowsInserted > 0) {
                             messageLabel.setText("Registration successful!");
-                            //new LoginFrame().setVisible(true);
+                            new LoginFrame().setVisible(true);
                             dispose();
                         }
 
                         statement.close();
-                        connection.close();
+                        conn.close();
                     } catch (SQLException ex) {
                         ex.printStackTrace();
                     }

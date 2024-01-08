@@ -11,6 +11,8 @@ public class ViewFrame extends JFrame {
     private String username; 
 
     Connection conn = null;
+    PreparedStatement statement;
+    ResultSet result;
 
     public ViewFrame(int user_id, String username) {
         this.user_id = user_id; 
@@ -34,6 +36,7 @@ public class ViewFrame extends JFrame {
         JScrollPane scrollPane = new JScrollPane(taskTable);
         this.add(scrollPane, BorderLayout.CENTER);
 
+        refreshTable();        
         JPanel buttonPanel = new JPanel();
         
         JButton addButton = new JButton("Add");
@@ -57,6 +60,8 @@ public class ViewFrame extends JFrame {
                         statement.setInt(5, user_id);
 
                         statement.execute();
+                        
+                        model.addRow(new Object[]{"", "", "", ""});
                         
                         statement.close();
                         conn.close();
@@ -142,4 +147,20 @@ public class ViewFrame extends JFrame {
 
         this.add(buttonPanel, BorderLayout.PAGE_END);
     }
+    
+    public void refreshTable() {
+		conn=DBConnection.getConnection();
+		try {
+			statement = conn.prepareStatement("select * from \"Task\"");
+			result = statement.executeQuery();
+			taskTable.setModel(new MyModel(result));
+		}
+		catch(SQLException e){
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }

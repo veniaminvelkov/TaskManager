@@ -13,11 +13,15 @@ public class RegisterFrame extends JFrame {
 
     public RegisterFrame() {
         setTitle("Registration");
-        setSize(500, 650);
+        setSize(300, 350);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(12, 6));
+        panel.setLayout(new GridLayout(10, 4));
+
+        int padding = 10;
+        
+        panel.setBorder(BorderFactory.createEmptyBorder(padding, padding, padding, padding));
 
         panel.add(new JLabel("Username:"));
         usernameField = new JTextField();

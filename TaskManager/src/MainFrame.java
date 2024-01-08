@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.ZonedDateTime;
 
 import javax.security.auth.login.LoginContext;
 import javax.swing.BorderFactory;
@@ -31,8 +32,11 @@ public class MainFrame extends JFrame {
 	
 	JButton registerBt = new JButton("Register");
 	JButton loginBt = new JButton("Log In");
+	
+	JFrame mainFrame;
 
 	public MainFrame() {
+		
 		this.setTitle("Welcome Page");
 		this.setSize(300, 350);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -53,6 +57,7 @@ public class MainFrame extends JFrame {
 		this.add(upPanel, BorderLayout.PAGE_START);
 		this.add(downPanel, BorderLayout.PAGE_END);
 		
+		mainFrame = this;
 
 		registerBt.addMouseListener(new MouseListener(){
 
@@ -95,7 +100,7 @@ public class MainFrame extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				
-				LoginFrame loginFrame = new LoginFrame();				
+				LoginFrame loginFrame = new LoginFrame(mainFrame);				
 				loginFrame.setVisible(true);
 				
 			}

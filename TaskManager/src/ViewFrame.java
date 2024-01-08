@@ -9,6 +9,8 @@ public class ViewFrame extends JFrame {
     private JTable taskTable;
     private int user_id;
     private String username; 
+    
+    Connection conn = null;
 
     public ViewFrame(int user_id, String username) {
     	this.user_id = user_id; 
@@ -45,7 +47,7 @@ public class ViewFrame extends JFrame {
             		int priority = (int) model.getValueAt(selectedRow, 3);
 
             		try {
-            			Connection conn = DBConnection.getConnection();
+            			conn = DBConnection.getConnection();
             			String sql = "UPDATE Tasks SET title = ?, description = ?, deadline = ?, priority = ? WHERE username = ? AND task_id = ?";
 
             			PreparedStatement statement = conn.prepareStatement(sql);
@@ -76,7 +78,7 @@ public class ViewFrame extends JFrame {
             		model.removeRow(selectedRow);
 
             		try {
-            			Connection conn = DBConnection.getConnection();
+            			conn = DBConnection.getConnection();
             			String sql = "DELETE FROM Tasks WHERE username = ? AND task_id = ?";
 
             			PreparedStatement statement = conn.prepareStatement(sql);

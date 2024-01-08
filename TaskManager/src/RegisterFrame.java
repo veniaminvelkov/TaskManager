@@ -77,6 +77,7 @@ public class RegisterFrame extends JFrame {
                         if (rowsInserted > 0) {
                             messageLabel.setText("Registration successful!");
                             dispose();
+                           
                         }
 
                         statement.close();

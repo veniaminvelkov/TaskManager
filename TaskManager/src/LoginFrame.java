@@ -96,9 +96,11 @@ public class LoginFrame extends JFrame {
 						String smtpass = result.getString("PASSWORD");
 						
 						if (password.equals(smtpass)) {
+							int user_id = result.getInt("USER_ID");
 							
 							//TODO: Login finishes, open main task window. The message is for testing purposes.
 							messageL.setText("Login success!");
+							new ViewFrame(user_id, username).setVisible(true);
 							
 							state.close();
 							conn.close();

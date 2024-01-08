@@ -1,5 +1,3 @@
-package uni;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -31,12 +29,44 @@ public class ViewFrame extends JFrame {
         model.setColumnIdentifiers(columnNames);
         taskTable = new JTable(model);
 
-        model.addRow(new Object[]{null, "", "", null, 0});
+        model.addRow(new Object[]{"", "", "", ""});
 
         JScrollPane scrollPane = new JScrollPane(taskTable);
         this.add(scrollPane, BorderLayout.CENTER);
 
         JPanel buttonPanel = new JPanel();
+        
+        JButton addButton = new JButton("Add");
+        addButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                int selectedRow = taskTable.getSelectedRow();
+                if (selectedRow != -1) {
+                    String title = (String) model.getValueAt(selectedRow, 0);
+                    String description = (String) model.getValueAt(selectedRow, 1);
+                    String deadline = (String) model.getValueAt(selectedRow, 2);
+                    int priority = Integer.parseInt((String) model.getValueAt(selectedRow, 3));
+
+                    try {
+                        conn = DBConnection.getConnection();
+                        String sql = "INSERT INTO \"Task\" (title, description, deadline, priority, user_id) VALUES (?, ?, ?, ?, ?)";
+                        PreparedStatement statement = conn.prepareStatement(sql);
+                        statement.setString(1, title);
+                        statement.setString(2, description);
+                        statement.setString(3, deadline);
+                        statement.setInt(4, priority);
+                        statement.setInt(5, user_id);
+
+                        statement.execute();
+                        
+                        statement.close();
+                        conn.close();
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+        });
+        buttonPanel.add(addButton);
 
         JButton editButton = new JButton("Edit");
         editButton.addActionListener(new ActionListener() {

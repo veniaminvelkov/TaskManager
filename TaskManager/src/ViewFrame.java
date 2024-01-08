@@ -1,3 +1,5 @@
+package uni;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -9,11 +11,11 @@ public class ViewFrame extends JFrame {
     private JTable taskTable;
     private int user_id;
     private String username; 
-    
+
     Connection conn = null;
 
     public ViewFrame(int user_id, String username) {
-    	this.user_id = user_id; 
+        this.user_id = user_id; 
         this.username = username; 
 
         setTitle("Tasks");
@@ -29,7 +31,7 @@ public class ViewFrame extends JFrame {
         model.setColumnIdentifiers(columnNames);
         taskTable = new JTable(model);
 
-        model.addRow(new Object[]{"", "", null, 0});
+        model.addRow(new Object[]{null, "", "", null, 0});
 
         JScrollPane scrollPane = new JScrollPane(taskTable);
         this.add(scrollPane, BorderLayout.CENTER);
@@ -39,32 +41,33 @@ public class ViewFrame extends JFrame {
         JButton editButton = new JButton("Edit");
         editButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-            	int selectedRow = taskTable.getSelectedRow();
-            	if (selectedRow != -1) {
-            		String title = (String) model.getValueAt(selectedRow, 0);
-            		String description = (String) model.getValueAt(selectedRow, 1);
-            		Date deadline = (Date) model.getValueAt(selectedRow, 2);
-            		int priority = (int) model.getValueAt(selectedRow, 3);
+                int selectedRow = taskTable.getSelectedRow();
+                if (selectedRow != -1) {
+                    int task_id = (int) model.getValueAt(selectedRow, 0);
+                    String title = (String) model.getValueAt(selectedRow, 1);
+                    String description = (String) model.getValueAt(selectedRow, 2);
+                    Date deadline = (Date) model.getValueAt(selectedRow, 3);
+                    int priority = (int) model.getValueAt(selectedRow, 4);
 
-            		try {
-            			conn = DBConnection.getConnection();
-            			String sql = "UPDATE Tasks SET title = ?, description = ?, deadline = ?, priority = ? WHERE username = ? AND task_id = ?";
+                    try {
+                        conn = DBConnection.getConnection();
+                        String sql = "UPDATE Tasks SET title = ?, description = ?, deadline = ?, priority = ? WHERE user_id = ? AND task_id = ?";
 
-            			PreparedStatement statement = conn.prepareStatement(sql);
-            			statement.setString(1, title);
-            			statement.setString(2, description);
-            			statement.setDate(3, deadline);
-            			statement.setInt(4, priority);
-            			statement.setString(5, username);
-            			statement.setInt(6, task_id); 
+                        PreparedStatement statement = conn.prepareStatement(sql);
+                        statement.setString(1, title);
+                        statement.setString(2, description);
+                        statement.setDate(3, deadline);
+                        statement.setInt(4, priority);
+                        statement.setInt(5, user_id);
+                        statement.setInt(6, task_id);
 
-            			statement.executeUpdate();
+                        statement.executeUpdate();
 
-            			statement.close();
-            			conn.close();
-            		} catch (SQLException ex) {
-            			ex.printStackTrace();
-            		}
+                        statement.close();
+                        conn.close();
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                    }
                 }
             }
         });
@@ -73,26 +76,26 @@ public class ViewFrame extends JFrame {
         JButton deleteButton = new JButton("Delete");
         deleteButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-            	int selectedRow = taskTable.getSelectedRow();
-            	if (selectedRow != -1) {
-            		model.removeRow(selectedRow);
+                int selectedRow = taskTable.getSelectedRow();
+                if (selectedRow != -1) {
+                    int task_id = (int) model.getValueAt(selectedRow, 0);
 
-            		try {
-            			conn = DBConnection.getConnection();
-            			String sql = "DELETE FROM Tasks WHERE username = ? AND task_id = ?";
+                    try {
+                        conn = DBConnection.getConnection();
+                        String sql = "DELETE FROM Tasks WHERE user_id = ? AND task_id = ?";
 
-            			PreparedStatement statement = conn.prepareStatement(sql);
-            			statement.setString(1, username);
-            			statement.setInt(2, task_id); 
+                        PreparedStatement statement = conn.prepareStatement(sql);
+                        statement.setInt(1, user_id);
+                        statement.setInt(2, task_id);
 
-            			statement.executeUpdate();
-            			model.removeRow(selectedRow);
+                        statement.executeUpdate();
+                        model.removeRow(selectedRow);
 
-            			statement.close();
-            			conn.close();
-            		} catch (SQLException ex) {
-            			ex.printStackTrace();
-            		}
+                        statement.close();
+                        conn.close();
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                    }
                 }
             }
         });
@@ -106,7 +109,6 @@ public class ViewFrame extends JFrame {
             }
         });
         buttonPanel.add(logoutButton);
-
 
         this.add(buttonPanel, BorderLayout.PAGE_END);
     }

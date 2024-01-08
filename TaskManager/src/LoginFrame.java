@@ -37,7 +37,7 @@ public class LoginFrame extends JFrame {
 	
 	
 	
-	public LoginFrame() {
+	public LoginFrame(JFrame mainFrame) {
 		this.setTitle("Login Page");
 		this.setSize(300, 350);
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -105,6 +105,9 @@ public class LoginFrame extends JFrame {
 							state.close();
 							conn.close();
 							dispose();
+							if (mainFrame != null) {								
+								mainFrame.dispose();
+							}
 						}
 						else {
 							messageL.setText("Wrong password.");

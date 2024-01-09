@@ -1,3 +1,5 @@
+package uni;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -5,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
 import java.time.LocalDate;
+import java.sql.Date;
 
 public class ViewFrame extends JFrame {
     private JTable taskTable;
@@ -18,7 +21,6 @@ public class ViewFrame extends JFrame {
     String visibleDate = LocalDate.now().toString();
 
     public ViewFrame(int user_id, String username) {
-    	
         this.user_id = user_id; 
         this.username = username; 
 
@@ -57,7 +59,12 @@ public class ViewFrame extends JFrame {
                 int selectedRow = taskTable.getSelectedRow();
                 if (selectedRow >= 0) {
                     Long task_id = (Long) taskTable.getModel().getValueAt(selectedRow, 0);
-                    new EditFrame(ViewFrame.this, user_id, task_id).setVisible(true);
+                    String title = (String) taskTable.getModel().getValueAt(selectedRow, 1);
+                    String description = (String) taskTable.getModel().getValueAt(selectedRow, 2);
+                    Date deadline = (Date) taskTable.getModel().getValueAt(selectedRow, 3);
+                    Integer priority = (Integer) taskTable.getModel().getValueAt(selectedRow, 4);
+
+                    new EditFrame(ViewFrame.this, user_id, task_id, title, description, deadline, priority).setVisible(true);
                 } else {
                     JOptionPane.showMessageDialog(null, "Please select a row to edit.");
                 }
@@ -87,6 +94,7 @@ public class ViewFrame extends JFrame {
             }
         });
         buttonPanel.add(deleteButton);
+        
         
         JButton sortButton = new JButton("Sort");
         sortButton.addActionListener(new ActionListener() {
@@ -167,4 +175,9 @@ public class ViewFrame extends JFrame {
             e.printStackTrace();
         }
     }
+
 }
+
+
+
+

@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
@@ -17,7 +18,7 @@ public class EditFrame extends JFrame {
     
     Connection conn = null;
 
-    public EditFrame(ViewFrame viewFrame, int user_id, Long task_id) {
+    public EditFrame(ViewFrame viewFrame, int user_id, Long task_id, String title, String description, Date deadline, Integer priority) {
         this.viewFrame = viewFrame;
         this.user_id = user_id;
         this.task_id = task_id;
@@ -34,19 +35,19 @@ public class EditFrame extends JFrame {
         downPanel.setLayout(new GridLayout(2,1));
 
         upPanel.add(new JLabel("Title:"));
-        titleField = new JTextField();
+        titleField = new JTextField(title);
         upPanel.add(titleField);
 
         upPanel.add(new JLabel("Description:"));
-        descriptionField = new JTextField();
+        descriptionField = new JTextField(description);
         upPanel.add(descriptionField);
 
         upPanel.add(new JLabel("Deadline:"));
-        deadlineField = new JTextField();
+        deadlineField = new JTextField(deadline.toString());
         upPanel.add(deadlineField);
 
         upPanel.add(new JLabel("Priority:"));
-        priorityField = new JTextField();
+        priorityField = new JTextField(priority.toString());
         upPanel.add(priorityField);
         
         int padding = 10;

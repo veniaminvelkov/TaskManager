@@ -87,6 +87,14 @@ public class ViewFrame extends JFrame {
             }
         });
         buttonPanel.add(deleteButton);
+        
+        JButton sortButton = new JButton("Sort");
+        sortButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                new SortFrame(ViewFrame.this, user_id).setVisible(true);
+            }
+        });
+        buttonPanel.add(sortButton);
 
 
         JButton logoutButton = new JButton("Logout");
@@ -132,4 +140,31 @@ public class ViewFrame extends JFrame {
 			e.printStackTrace();
 		}
 	}
+    
+    public void sortTable(boolean isAscending) {
+        String sortBy;
+        if(isAscending == true)
+        	sortBy = "ASC";
+        else
+        	sortBy = "DESC";
+        conn=DBConnection.getConnection();
+        try {
+            statement = conn.prepareStatement("SELECT * FROM \"Task\" WHERE user_id = ? ORDER BY priority " + sortBy);
+            statement.setInt(1, this.user_id);
+            result = statement.executeQuery();
+            taskTable.setModel(new MyModel(result));
+            
+            taskTable.getColumnModel().getColumn(0).setMinWidth(0);
+            taskTable.getColumnModel().getColumn(0).setMaxWidth(0);
+            taskTable.getColumnModel().getColumn(taskTable.getColumnCount()-1).setMinWidth(0);
+            taskTable.getColumnModel().getColumn(taskTable.getColumnCount()-1).setMaxWidth(0);
+        }
+        catch(SQLException e){
+        	// TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (Exception e) {
+        	// TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
 }

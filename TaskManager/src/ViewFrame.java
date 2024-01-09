@@ -27,12 +27,7 @@ public class ViewFrame extends JFrame {
 
         String[] columnNames = {"Title", "Description", "Deadline", "Priority"};
 
-        DefaultTableModel model = new DefaultTableModel() {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return true; 
-            }
-        };
+        DefaultTableModel model = new DefaultTableModel();
         model.setColumnIdentifiers(columnNames);
         taskTable = new JTable(model);
 
@@ -55,9 +50,18 @@ public class ViewFrame extends JFrame {
         JButton editButton = new JButton("Edit");
         editButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                int selectedRow = taskTable.getSelectedRow();
+                if (selectedRow >= 0) {
+                    Long task_id = (Long) taskTable.getModel().getValueAt(selectedRow, 0);
+                    new EditFrame(ViewFrame.this, user_id, task_id).setVisible(true);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Please select a row to edit.");
+                }
             }
         });
         buttonPanel.add(editButton);
+
+
 
         JButton deleteButton = new JButton("Delete");
         deleteButton.addActionListener(new ActionListener() {

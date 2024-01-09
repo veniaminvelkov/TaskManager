@@ -19,9 +19,15 @@ public class AddFrame extends JFrame{
     private JButton addButton;
     private JLabel messageLabel;
     
+    private ViewFrame viewFrame; 
+    private int user_id; 
+    
     Connection conn = null;
 
-    public AddFrame() {
+    public AddFrame(ViewFrame viewFrame, int user_id) {
+    	this.viewFrame = viewFrame;
+    	this.user_id = user_id;
+    	
         setTitle("Add a task");
         setSize(300, 350);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -69,16 +75,18 @@ public class AddFrame extends JFrame{
                 else {
                     try {
                     	conn=DBConnection.getConnection();
-            			String sql = "INSERT INTO \"Task\" (title, description, deadline, priority) VALUES (?, ?, ?, ?)";
+            			String sql = "INSERT INTO \"Task\" (title, description, deadline, priority, user_id) VALUES (?, ?, ?, ?, ?)";
 
                         PreparedStatement statement = conn.prepareStatement(sql);
                         statement.setString(1, title);
                         statement.setString(2, description);
                         statement.setString(3, deadline);
                         statement.setString(4, priority);
+                        statement.setInt(5, user_id);
 
                         int rowsInserted = statement.executeUpdate();
                         if (rowsInserted > 0) {
+                        	viewFrame.refreshTable(); 
                             dispose();
                         }
 

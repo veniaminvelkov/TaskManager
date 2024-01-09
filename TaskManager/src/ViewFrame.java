@@ -27,83 +27,37 @@ public class ViewFrame extends JFrame {
 
         String[] columnNames = {"Title", "Description", "Deadline", "Priority"};
 
-        DefaultTableModel model = new DefaultTableModel();
+        DefaultTableModel model = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return true; 
+            }
+        };
         model.setColumnIdentifiers(columnNames);
         taskTable = new JTable(model);
-
-        model.addRow(new Object[]{"", "", "", ""});
 
         JScrollPane scrollPane = new JScrollPane(taskTable);
         this.add(scrollPane, BorderLayout.CENTER);
 
-        refreshTable();        
+        refreshTable();      
+        
+        taskTable.removeColumn(taskTable.getColumnModel().getColumn(0));
+        taskTable.removeColumn(taskTable.getColumnModel().getColumn(taskTable.getColumnCount()-1));
+        
         JPanel buttonPanel = new JPanel();
         
         JButton addButton = new JButton("Add");
         addButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                int selectedRow = taskTable.getSelectedRow();
-                if (selectedRow != -1) {
-                    String title = (String) model.getValueAt(selectedRow, 0);
-                    String description = (String) model.getValueAt(selectedRow, 1);
-                    String deadline = (String) model.getValueAt(selectedRow, 2);
-                    int priority = Integer.parseInt((String) model.getValueAt(selectedRow, 3));
-
-                    try {
-                        conn = DBConnection.getConnection();
-                        String sql = "INSERT INTO \"Task\" (title, description, deadline, priority, user_id) VALUES (?, ?, ?, ?, ?)";
-                        PreparedStatement statement = conn.prepareStatement(sql);
-                        statement.setString(1, title);
-                        statement.setString(2, description);
-                        statement.setString(3, deadline);
-                        statement.setInt(4, priority);
-                        statement.setInt(5, user_id);
-
-                        statement.execute();
-                        
-                        model.addRow(new Object[]{"", "", "", ""});
-                        
-                        statement.close();
-                        conn.close();
-                    } catch (SQLException ex) {
-                        ex.printStackTrace();
-                    }
-                }
+            	new AddFrame(ViewFrame.this, user_id).setVisible(true);
             }
         });
         buttonPanel.add(addButton);
 
+
         JButton editButton = new JButton("Edit");
         editButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                int selectedRow = taskTable.getSelectedRow();
-                if (selectedRow != -1) {
-                    int task_id = (int) model.getValueAt(selectedRow, 0);
-                    String title = (String) model.getValueAt(selectedRow, 1);
-                    String description = (String) model.getValueAt(selectedRow, 2);
-                    Date deadline = (Date) model.getValueAt(selectedRow, 3);
-                    int priority = (int) model.getValueAt(selectedRow, 4);
-
-                    try {
-                        conn = DBConnection.getConnection();
-                        String sql = "UPDATE Tasks SET title = ?, description = ?, deadline = ?, priority = ? WHERE user_id = ? AND task_id = ?";
-
-                        PreparedStatement statement = conn.prepareStatement(sql);
-                        statement.setString(1, title);
-                        statement.setString(2, description);
-                        statement.setDate(3, deadline);
-                        statement.setInt(4, priority);
-                        statement.setInt(5, user_id);
-                        statement.setInt(6, task_id);
-
-                        statement.executeUpdate();
-
-                        statement.close();
-                        conn.close();
-                    } catch (SQLException ex) {
-                        ex.printStackTrace();
-                    }
-                }
             }
         });
         buttonPanel.add(editButton);
@@ -112,29 +66,23 @@ public class ViewFrame extends JFrame {
         deleteButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 int selectedRow = taskTable.getSelectedRow();
-                if (selectedRow != -1) {
-                    int task_id = (int) model.getValueAt(selectedRow, 0);
-
+                if (selectedRow >= 0) {
+                    Long task_id = (Long) taskTable.getModel().getValueAt(selectedRow, 0);
                     try {
-                        conn = DBConnection.getConnection();
-                        String sql = "DELETE FROM Tasks WHERE user_id = ? AND task_id = ?";
-
-                        PreparedStatement statement = conn.prepareStatement(sql);
-                        statement.setInt(1, user_id);
-                        statement.setInt(2, task_id);
-
-                        statement.executeUpdate();
-                        model.removeRow(selectedRow);
-
-                        statement.close();
-                        conn.close();
+                        PreparedStatement deleteStatement = conn.prepareStatement("DELETE FROM \"Task\" WHERE task_id = ?");
+                        deleteStatement.setLong(1, task_id);
+                        deleteStatement.executeUpdate();
+                        refreshTable();
                     } catch (SQLException ex) {
                         ex.printStackTrace();
                     }
+                } else {
+                    JOptionPane.showMessageDialog(null, "Please select a row to delete.");
                 }
             }
         });
         buttonPanel.add(deleteButton);
+
 
         JButton logoutButton = new JButton("Logout");
         logoutButton.addActionListener(new ActionListener() {
@@ -154,6 +102,11 @@ public class ViewFrame extends JFrame {
 			statement = conn.prepareStatement("select * from \"Task\"");
 			result = statement.executeQuery();
 			taskTable.setModel(new MyModel(result));
+			
+			taskTable.getColumnModel().getColumn(0).setMinWidth(0);
+	        taskTable.getColumnModel().getColumn(0).setMaxWidth(0);
+	        taskTable.getColumnModel().getColumn(taskTable.getColumnCount()-1).setMinWidth(0);
+	        taskTable.getColumnModel().getColumn(taskTable.getColumnCount()-1).setMaxWidth(0);
 		}
 		catch(SQLException e){
 			// TODO Auto-generated catch block

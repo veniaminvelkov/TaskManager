@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
+import java.time.LocalDate;
 
 public class ViewFrame extends JFrame {
     private JTable taskTable;
@@ -13,8 +14,11 @@ public class ViewFrame extends JFrame {
     Connection conn = null;
     PreparedStatement statement;
     ResultSet result;
+    
+    String visibleDate = LocalDate.now().toString();
 
     public ViewFrame(int user_id, String username) {
+    	
         this.user_id = user_id; 
         this.username = username; 
 
@@ -93,6 +97,15 @@ public class ViewFrame extends JFrame {
             }
         });
         buttonPanel.add(logoutButton);
+        
+        JButton changeDateButton = new JButton("Change Day");
+        changeDateButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                new CalendarFrame(ViewFrame.this).setVisible(true);
+                refreshTable();
+            }
+        });
+        buttonPanel.add(changeDateButton);
 
         this.add(buttonPanel, BorderLayout.PAGE_END);
     }
@@ -100,8 +113,9 @@ public class ViewFrame extends JFrame {
     public void refreshTable() {
 		conn=DBConnection.getConnection();
 		try {
-			statement = conn.prepareStatement("select * from \"Task\" WHERE user_id = ?");
+			statement = conn.prepareStatement("select * from \"Task\" WHERE user_id = ? AND deadline = ?");
 			statement.setInt(1, this.user_id);
+			statement.setString(2, visibleDate);
 			result = statement.executeQuery();
 			taskTable.setModel(new MyModel(result));
 			

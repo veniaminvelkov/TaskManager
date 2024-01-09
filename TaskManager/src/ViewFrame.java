@@ -100,7 +100,8 @@ public class ViewFrame extends JFrame {
     public void refreshTable() {
 		conn=DBConnection.getConnection();
 		try {
-			statement = conn.prepareStatement("select * from \"Task\"");
+			statement = conn.prepareStatement("select * from \"Task\" WHERE user_id = ?");
+			statement.setInt(1, this.user_id);
 			result = statement.executeQuery();
 			taskTable.setModel(new MyModel(result));
 			

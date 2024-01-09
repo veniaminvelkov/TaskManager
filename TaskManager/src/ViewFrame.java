@@ -41,9 +41,6 @@ public class ViewFrame extends JFrame {
 
         refreshTable();      
         
-        taskTable.removeColumn(taskTable.getColumnModel().getColumn(0));
-        taskTable.removeColumn(taskTable.getColumnModel().getColumn(taskTable.getColumnCount()-1));
-        
         JPanel buttonPanel = new JPanel();
         
         JButton addButton = new JButton("Add");

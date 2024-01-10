@@ -63,6 +63,10 @@ public class EditFrame extends JFrame {
 
                 if (title.isEmpty() || description.isEmpty() || deadline.isEmpty() || priority.isEmpty()) {
                     messageLabel.setText("None of the fields can be empty.");
+                } else if (!title.matches("[a-zA-Z ]+")) {
+                    messageLabel.setText("Titles can only contain letters.");
+                } else if (!priority.matches("[0-9]+")) {
+                    messageLabel.setText("Titles can only contain digits.");
                 }
                 else {
                     try {

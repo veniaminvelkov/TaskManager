@@ -9,12 +9,14 @@ public class RegisterFrame extends JFrame {
     private JButton registerButton;
     private JLabel messageLabel;
     
+    JPanel downPanel = new JPanel();
+    
     Connection conn = null;
 
     public RegisterFrame() {
         setTitle("Registration");
         setSize(300, 350);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(10, 4));
@@ -22,6 +24,7 @@ public class RegisterFrame extends JFrame {
         int padding = 10;
         
         panel.setBorder(BorderFactory.createEmptyBorder(padding, padding, padding, padding));
+		downPanel.setBorder(BorderFactory.createEmptyBorder(padding, padding, padding, padding));
 
         panel.add(new JLabel("Username:"));
         usernameField = new JTextField();
@@ -46,9 +49,17 @@ public class RegisterFrame extends JFrame {
         panel.add(new JLabel("Phone:"));
         phoneField = new JTextField();
         panel.add(phoneField);
+        
+        downPanel.setLayout(new GridLayout(2, 1));
+        
+        messageLabel = new JLabel();
+        messageLabel.setForeground(Color.RED);
+		downPanel.add(messageLabel);
+		
+		this.add(downPanel, BorderLayout.PAGE_END);
 
         registerButton = new JButton("Register");
-        panel.add(registerButton);
+        downPanel.add(registerButton);
         registerButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String username = usernameField.getText();
@@ -91,10 +102,6 @@ public class RegisterFrame extends JFrame {
                 }
             }
         });
-
-        messageLabel = new JLabel();
-        messageLabel.setForeground(Color.RED);
-        panel.add(messageLabel);
 
         add(panel);
     }

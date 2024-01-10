@@ -66,7 +66,7 @@ public class EditFrame extends JFrame {
                 } else if (!title.matches("[a-zA-Z ]+")) {
                     messageLabel.setText("Titles can only contain letters.");
                 } else if (!priority.matches("[0-9]+")) {
-                    messageLabel.setText("Titles can only contain digits.");
+                    messageLabel.setText("Priorities can only contain digits.");
                 }
                 else {
                     try {
